@@ -1,0 +1,39 @@
+/*
+* Name - Avni Goyal
+* Seneca Email - agoyal31@myseneca.ca
+* Seneca Student ID - 166795211
+* Date of completion - 2023/05/21
+*/
+//I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+
+The difference between internal and external linkage is that in former everything only in the scope of one translational unit whereas in later things are
+linked beyond that specific translational unit. To commence with the workshop1, we have used the external linkage by using the extern keyword for two variables
+inside the module "carads.h" that would be accessible across different translational units.
+                   EXAMPLE: extern double g_taxrate;
+                            extern double g_discount;
+Furthermore, internal linkage limits the access of variables to only that specific translational unit in which they are declared. Basically, const and 
+constexpr depicts this linkage.The internal linkage is present in the main module i.e. w1p2.cpp.
+                  CODE SNIPPET where it is used is:
+                  constexpr int MAX_CARS = 100;
+Jumping onto static variables, they are the type of variables that remain in the memory throughout the lifetime of the program. The static is used to keep
+hold for the place of counter even if the function goes out of scope. 
+                  EXAMPLE:   static int counter = 1;
+This holds the counter value to 1 and everytime the counter values increases by 1 it holds that specific increement until the program does not reset it.
+Once, the "reset is true" the counter again restarts from 1.
+Moreover, the biggest upgradation in Cars class in part2 is implementation of rule of three. 
+In first part it was required that "carBrand" should be limited to 10 characters whereas in part2 the file object should be capable to read the brand of car
+from file of any length and to achieve this we needed a character pointer that can allocate memory based on the length of brand of car. Therefor, in part2
+                       the brand of car is upgraded from char m_carBrand[10]{}; to char* m_carBrand{};
+Moving furthur, as concluded from the main file one object is being copied/added to the array of other object as shown below:
+                   currentCar >> recordedCarsOnAds[allCars++];
+So, global function is created:
+                   	void operator>>(const Cars& car1, Cars& car2);
+Because, Cars class have resources in it and needs a proper memory deallocation while deep copy. To prevent memory leaks, the rule of three is applied that 
+is copy constructor, copy assignment and destructor. EXAMPLE:
+                        Cars(const Cars& c); //cc
+		        Cars& operator=(const Cars& c); // ca
+		        virtual ~Cars(); //destructor  
+
+
+
+ 
