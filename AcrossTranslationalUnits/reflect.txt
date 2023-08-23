@@ -1,11 +1,3 @@
-/*
-* Name - Avni Goyal
-* Seneca Email - agoyal31@myseneca.ca
-* Seneca Student ID - 166795211
-* Date of completion - 2023/05/21
-*/
-//I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
-
 The difference between internal and external linkage is that in former everything only in the scope of one translational unit whereas in later things are
 linked beyond that specific translational unit. To commence with the workshop1, we have used the external linkage by using the extern keyword for two variables
 inside the module "carads.h" that would be accessible across different translational units.
