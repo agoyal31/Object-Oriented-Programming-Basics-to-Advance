@@ -1,0 +1,28 @@
+// I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+// Name - Avni Goyal
+// Student Number - 166795211
+// Student email - agoyal31@myseneca.ca
+// Date Completed - 19/11/2022
+WORKSHOP 4 REFLECTION
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+This workshop was full of knowledge and cleared my alot of concepts that are related to class objects, constructors and destructors. The main challenging part of the 
+workshop was how to access the other(child - TourTicket) class member functions inside the parent(TourBus) class. In this workshop, two classes are
+there TourBus and TourTicket that acts like parent-child relationship. To begin with, there was TourBus that comes in three sizes based upon the number of passengers 
+they can carry inside them that marks whether the tour bus is valid or not. If the number of passengers carried by them is from 4,16 or 22 then the 
+tour bus is valid otherwise it is not. Moreover, if we look at the file main.cpp, the dynamic allocation of class TourBus object is taking place that is taking one 
+argument num(noOfPassengers). Here, an object of class TourBus is made that is accepting an argument(num) is created. Because, the new object is made,
+with one argument, therefore one argument constructor is called immediately. If the number of passengers entered is equal to 4 then the boarding of passengers will 
+take place in other two cases(16 or 22) it will display that the "Cannot start the tour, the bus is not fully boarded!". Now as soon as boarding of 
+passengers start, it will ask for the names of four passengers who are waiting for boarding. During boarding we have to insert and extract on terminal the name of 
+passengers. So, I have to make an array that can hold a name of passenger in the class TourBus. But as per instructions I am restricted to do that but
+I have the class TourTicket in which the name of different passengers are first inserted and then extacted dynamically. To, access member functions of that class
+(that are performing the task of assigning(issue) and displaying(display)), I have to first make the object of TourTicket class in TourBus class that is 
+pointing dynamically to TourTicket Class. Since, I want to insert that many names of passengers that a bus will carry(based upon the constructor of the TourBus). 
+So, I have to dynamically allocate the memory for the creation of objects that will be holding the names of passangers that a bus is carrying(that are 4 in this case).
+Hence, array of four objects of class TourTicket is made inside the class TourBus.
+                                                     ticketObj = new TourTicket[m_CarryPassangers]
+After the objects are made, now it can access the member functions of class TourTicket and can insert the names of passengers by accessing the issue member function
+ of TourTicket class by its object over and over again(loop) till all the passengers are not boarded as per the specified format.
+At last, function startTheTour is called, if the tour is valid(if (validTour()) and boarding is done(done == true) then the boarded passengers and their ticket 
+numbers will be dsplayed in the specified format otherwise if ((validTour() && done == false)) then the message will be printed as displayed above.
