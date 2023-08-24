@@ -1,0 +1,21 @@
+/*
+Name:Avni Goyal
+Email:agoyal31@myseneca.ca
+Student ID:166795211
+Data:28/11/2022
+Section:NBB
+*/
+
+
+WORKSHOP-9
+-----------------------------------------------------------------------------------------------------------------------------------------------------------------------
+This workshop was very knowledgeble as it helped me to clear the unclear concepts related to derived class and resources. Also, to keep the check upon the memory leak
+was a challenge and when it comes to applying the rule of three on both the base and the derived class it becomes more challenging as the code demands to keep an eye
+over allocation and deallocation of memory at every point to avoid any leak and errors. The rule of three includes the copy constructor, the assignment operator and the 
+destructor. Moreover, I find reading and writing from and into the files a bit challenging as got very confused while working with text files. To begin with, in this 
+workshop there were two modules HtmlText and Text with their respective classes inside the .h modules. The Text(child) class is derived from the base class HtmlText
+(parent), the Text class is dynamically holding the content that is recieved from the file  in m_content whereas HtmlText class is doing the same but is recieving the
+title from the executable program (main.cpp) and storing it dynamically in m_title.
+                                            Moving further, in the execution of the program with the help of overridden function(write), when the HtmlText class object
+is called, it is responsible for displaying the text of Html but when the Text class object is calling the write function it is displaying the m_content using the operator
+[] query function. It also helped me to learn various methods to diplay the text that includes withspace and many more using getline and ignore etc.
