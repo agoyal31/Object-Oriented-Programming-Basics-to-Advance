@@ -1,0 +1,18 @@
+/*
+* Name - Avni Goyal
+* Seneca Email - agoyal31@myseneca.ca
+* Seneca Student ID - 166795211
+* Date of completion - 2023/08/19
+*/
+//I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+
+This workshop centers around the concept of smart pointers in C++. Smart pointers are specialized pointers that handle their memory management automatically. Unlike traditional pointers created using new, where we must manually use delete to free memory, smart pointers take care of this task when their scope ends. There are two main types of smart pointers: unique pointers and shared pointers.
+In C++, they are accessed as std::unique_ptr and std::shared_ptr respectively. These two types serve distinct purposes. A shared pointer allows multiple pointers to point to the same memory location, while a unique pointer ensures that only one pointer references the memory at any given time. When another pointer starts pointing to the same memory, the previous pointer becomes nullptr and the new one takes over.
+Our program exemplifies these concepts using unique pointers. Initially, the program utilized raw pointers, necessitating manual memory management. In the writeRaw function in WritingRecord.cpp, a new pointer object of the EmployeeWage type was created:
+                                               EmployeeWage* obj = new EmployeeWage(emp[i].name, sal[j].salary);
+Subsequent validation and Luhn's algorithm checks were performed. If validation passed, the += operator overload was called (activeEmp.operator+=(obj);) to add the new object to the vector. This operator expects a pointer of the same type. With raw pointers, this meant passing the EmployeeWage object by pointer, creating a duplicate pointer t.
+Post-vector insertion, the function scope ends, and t loses its reference, while obj remains valid, necessitating the manual use of delete to prevent memory leaks. Additionally, exception handling required explicit delete usage within the catch block.
+In the second part, we introduce unique pointers to simplify memory management. The writeSmart function in WritingRecord.cpp encapsulates dynamic memory allocation using:
+                                        std::unique_ptr<EmployeeWage> obj(new EmployeeWage(emp[i].name, sal[j].salary));
+Unique pointers ensure a single pointer to a memory location, ideal for the += operator. Here, move(obj) transfers ownership of the memory to the operator. Consequently, obj becomes null, and the smart pointer 't' holds the memory. When the function ends, the smart pointer's destructor automatically deallocates memory and then back in WritingReport.cpp, memory leaks or errors are avoided because obj is null.
+In summary, this program showcases the elegance of smart pointers by handling memory management intricacies behind the scenes, abstracting away complex logic for improved code simplicity and reliability.
