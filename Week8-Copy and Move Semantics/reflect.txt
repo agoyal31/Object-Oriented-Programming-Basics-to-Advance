@@ -1,0 +1,53 @@
+/*
+* Name - Avni Goyal
+* Seneca Email - agoyal31@myseneca.ca
+* Seneca Student ID - 166795211
+* Date of completion - 2023/05/28
+*/
+//I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+
+REFLECTION
+
+This workshop is nicely designed to clear concepts related to copy, move semantics, reading data from files and gives knowledge regarding chrono library.
+To commence with, the rule of five is applied in this workshop that includes copy constructor, copy assignment, move constructor, move assignment and destructor.
+Basically, the final output of the workshop displays the time taken by each of the above mentioned constructor, assignment operator and destructor to perform 
+particular tasks that are monitored by the special library named as -"chrono". As observed from output, it is clear that copy semantics take more time then move 
+semantics:
+         OUTPUT OF PROGRAM(EXECUTION ON MY MACHINE):
+  .........Copy Constructor: .102749000 nanoseconds.
+  .Copy Assignment Operator: .102119500 nanoseconds.
+  .........Move Constructor: .......900 nanoseconds.
+  .Move Assignment Operator: .......500 nanoseconds.
+This is because during copy, firstly, dynamically memory is allocated(heap) for new object as per the required size
+			  EXAMPLE: 
+                                match = new TennisMatch[m_numberOfMatches];
+Once, the memory is allocated then everything is copied from existing object into the current object(this) 
+                          EXAMPLE: 
+				for (int i = 0; i < m_numberOfMatches; ++i) {
+					match[i] = tennis.match[i];
+				}
+and loop keeps on running untill everything from one object gets copied to another.
+But it works entirely different for move semantics:  TennisLog& TennisLog::operator=(TennisLog&& tennis)
+Memory is not allocated dynamically and things are not copied from one to another. Instead, the another pointer pointing to the same dynamically created array. It means, that 
+the control of dynamically created array is shifted from the pointer that is pointing earlier to the newly created pointer. Hence, the former pointer is set to point to nullptr 
+with array of zero elements and the later starts pointing to the dyn. array that already resides in the system.
+     			 EXAMPLE:
+                                match = tennis.match;
+				tennis.match = nullptr;
+				tennis.m_numberOfMatches = 0;
+This concludes that, during copy, the memory is allocated first and then the inner content of array is copied from one to another but in move, no memory is allocated or content 
+is copied, simply the connection of pointer pointing is shifted to other pointer that is now pointing to the same array as the former. Due to all this, the time required by 
+memory to first allocate and copy one by one got saved and it takes much less time to carryout similar thing.
+
+Firstly, the file is open and first line is set to be ignored(through fptr.ignore), then till the end of file every record is counted in m_numberOfMatches(counter). After this,
+the dynamically array is created of size of m_numberOfMatches. Again the pointer is set at the beginning of file through 'seekg' function and then first line is ignored '.ignore'
+function and 'for' loop is run to populate the dynamically created array with object of matches.
+The one way to avoid reading the file is to create a static array of any desired size(assume it holds all the file records) and take an int number=0 that will keep track of the 
+matches being added to the static array immediately after being read from the file. Once, all the records from the file are added to the static array then memory is allocated
+dynamically to the pointer based on the result of number. Once, the memory is allocated, the matches are being copied from the static array to dynamically created array via 
+for loop that will run till 'number-1'.
+
+In part2, it is recommended to use the chrono library and its object "steady_clock" to monitor the timespan taken by particular task. Well, both the classes "steady_clock" and 
+"system_clock" of chrono library are different and are used for different purposes in a way that former is used as stopwatch (that records the timespan or as comparison that 
+how fast the task is carried among one another) but later is like a watch that tells what the current time in watch is.
+ 
