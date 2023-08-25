@@ -1,0 +1,57 @@
+/*
+* Name - Avni Goyal
+* Seneca Email - agoyal31@myseneca.ca
+* Seneca Student ID - 166795211
+* Date of completion - 2023/07/22
+*/
+//I have done REFLECTION BY MYSELF.
+
+1) Both lambda expression and functor are distinct in there own way. They have a distinct syntax, to start. The word "functor" refers to function objects. 
+The term "functor" refers to the process of overriding the () operator for a class such that an object can use it directly or be called as a function. On the
+other hand, a lambda expression is denoted by a commencing [] signifying control (read or write capabilities). The [] can include one of two things: = or &.
+= signifies read-only access, and & means read and write access. The arguments that should be provided to our function are placed inside the round brackets'()'
+that come after [] and before {}. The function body, or the logic of what this function is supposed to achieve, is placed inside curly brackets. Both have 
+distinct applications. We may utilise lambda expressions when we only want to implement logic once inside the main or when we want the function to access 
+variables that are inside the main. It is a form of temporary local function. Functors, on the other hand, have greater state flexibility and can preserve internal 
+data. They may also be kept in variables and passed around. 
+
+2) Modify the SpellChecker class to add a private member variable for error status (e.g., bool m_error), which will be set to true if an error occurs(if file 
+wouldn't be opened i.e., if(!fptr)) during the constructor's execution. Modify the constructor to return an error status instead of throwing an exception. We
+can use a boolean value (true for success and false for failure) or an integer code (e.g., 0 for success and non-zero for failure) to indicate the result. 
+Provide a public member function (e.g., bool hasError() const) in the SpellChecker class to allow the client to check whether an error occurred during 
+construction or not by simply returning m_error. Now, in the client code, instead of catching exceptions, we can use the hasError() member function to check \
+whether an error occurred during the construction of the SpellChecker object:
+
+	sdds::SpellChecker sp(argv[i]);
+	if (spellChecker.hasError()) {
+		// Handle the error condition gracefully
+		// For example, print an error message or take appropriate action
+		std::cout << "**Exception bad file name!"<< std::endl;
+	}
+	else {
+		// Continue with normal processing
+				for (auto j = 0u; j < library.size(); ++j)
+					library[j].fixSpelling(sp);
+				sp.showStatistics(std::cout);
+
+				for (auto j = 0u; j < theCollection.size(); ++j)
+					theCollection[j].fixSpelling(sp);
+				sp.showStatistics(std::cout);
+	}
+By using the hasError() member function, the client code can determine if there was an issue with the construction of the SpellChecker object and handle it 
+accordingly without relying on exceptions. This approach provides a more controlled and predictable behavior for error handling.
+
+3) To avoid duplicating the logic for loading data from the file in the Movie and Book classes, we can create a common base class that contains the shared 
+functionality for loading data from the file for both the classes. Both Movie and Book classes can then inherit from this base class and utilize the common implementation. We can
+create a common base class called Publication comprises of(protected member variables m_title, m_description and function void loadDataFromStr that takes a 
+string reference as an argument and public member functions like const std::string& title() const and const std::string& description() const that returns 
+the m_title and m_description of objects of distinct classes respectively), which will handle the common file loading logic for both Movie and Book. Next,
+we can modify the Movie and Book classes to inherit from the Publication base class and utilize the common loadDataFromStr function to handle data loading from file.
+By designing the Publication base class and inheritance, we centralize the common logic for loading data from the file, reducing code duplication and making the
+code more maintainable and easier to understand. The Publication base class encapsulates the common behavior shared by both Movie and Book, and any specific
+data parsing for each class can be handled in their respective constructors.
+
+4) Even though the classes Movie and Book are instantiated using custom constructors, the default constructor is still required because the main is 
+creating instances without parameters, for example, Movie movies[5]; in this scenario, the default constructor becomes essential because we can create 
+instances of the class without providing any parameters up front, allowing flexibility to populate the object later as needed. We won't be able to build a 
+class instance that is empty and populate it later if the default constructor is removed.
