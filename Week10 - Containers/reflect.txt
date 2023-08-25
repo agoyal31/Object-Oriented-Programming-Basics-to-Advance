@@ -1,0 +1,48 @@
+/*
+* Name - Avni Goyal
+* Seneca Email - agoyal31@myseneca.ca
+* Seneca Student ID - 166795211
+* Date of completion - 2023/06/15
+*/
+//I have done all the coding by myself and only copied the code that my professor provided to complete my workshops and assignments.
+
+
+Due to the presence of some really puzzling double pointers (which I also find quite confounding), this workshop #4 was very challenging and difficult to work 
+with. However, I managed to finish it. This workshops' primary focus was on different types of containers, such as composition and aggregation. The given 
+workshop demands to make three modules(Reservation, Restaurant and ConfirmationSender). These modules are in distinct type of relationship among one another. 
+
+The class named 'Reservation' is in composition with class named 'Restaurant' that means one class will have complete control over an object of a other class. 
+Here, 'Restaurant' class has full control over an instance of class 'Reservation' from creation to destruction. Hence, it 'Restaurant' is managing 'Reservation' 
+class entirely. In contrast, the classes in aggregation just handles an instance(object) of class, but it is not incharge of its creation or destruction. 
+This type of relationship could be seen among the classes 'Reservation' and 'ConfirmationSender' where an object of class 'ConfirmationSender' has pointer 
+that is pointing to an array of pointers of class 'Reservation' but not responsible for birth and death of an object of 'Reservation' class. 
+                          Moreover, the workshop demands for rule of 5, which is to be applied for both the classes 'Restaurant' and 'Reservation'. Since, both
+the classes forms distinct relation with the class 'Reservation' due to which there is little difference in copy semantics. But, implementation of move was same 
+for both of them. Because just pointer start pointing to the existing memory location that contains data inside it while the pointer pointing before to that 
+memory will not point to null.
+                       For example: (MOVE SEMANTICS)
+                                CONFIRMATIONSENDER MODULE
+			        confirmationReservation = confirm.confirmationReservation;
+				confirm.confirmationReservation = nullptr;
+Whereas, copy function semantics for composition relation classes, restaurant is responsible for actually making a new pointer array and new obejct of the reservation to each pointer in an array.
+Example -                				
+
+				if (reservationCount>0) {
+					previousReservations = new Reservation * [reservationCount];
+					for (size_t i = 0; i < reservationCount; ++i)
+					{
+						previousReservations[i] = new Reservation(*copyConsRestaurant.previousReservations[i]);
+					}
+				}
+On the other hand, in Aggregation, when implementing copy function, we cannot make a new object of the reservation as this class does not manages it. So, instead
+we only make a double pointer of reservation type and allot it an array of size. That each pointer is then pointing to the comming object of reservation.
+                            				//deep copy
+				if (confirm.confirmationReservation != nullptr)
+				{
+					confirmationReservation = new const Reservation * [incrementCounter];
+					for (size_t i = 0; i < incrementCounter; i++) {
+						confirmationReservation[i] = confirm.confirmationReservation[i];
+					}
+				}
+			
+   
