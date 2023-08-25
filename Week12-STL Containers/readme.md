@@ -1,20 +1,8 @@
-# Workshop 5: Functions and Error Handling
+# Workshop 6: STL Containers
 
+In this workshop, you store polymorphic objects in an STL container.
 
-In this workshop, you code a function object and a lambda expression, and handle exceptions. 
-
-You are to create a class template that manages a family of collection of objects of type `T`. 
-This template's client can register a callback function (an observer) that will be called every
-time a new item is added successfully to a collection.
-
-Your design works with collections of books and collections of movies, both loaded from files. 
-The file information contains mistakes:
-- You are to create a lambda expression that fixes the price information about a book
-- You are to create a function object (functor) that fixes some spelling mistakes in the descriptions and titles for books or movies.
-
-In case of exceptional circumstances, your design generates exceptions and subsequently handles them
-- the functor loads the misspelled words from a file, but if that file is missing, generates an exception.
-- iterating over the collection using indices, your design generates an exception if an index is invalid.
+You are going to create an application that simulates an autoshop that sells various types of vehicles.  This specific application, will focus on **cars** and **racecars**.
 
 
 
@@ -22,12 +10,10 @@ In case of exceptional circumstances, your design generates exceptions and subse
 
 Upon successful completion of this workshop, you will have demonstrated the abilities to:
 
-- design and code a templated class that allocates and deallocates dynamic memory
-- design and code a function object
-- design and code a lambda expression
-- code a member function that receives the address of a callback function to execute 
-- throw exceptions of different types
-- distinguish exception types from one another
+- manage polymorphic objects using the vector container of the STL
+- move a dynamically allocated object into a container
+- code a range-based iteration on the objects in a container
+- report and handle an exception
 
 
 
@@ -77,9 +63,12 @@ To check the output, use a program that can compare text files.  Search online f
 
 ## Part 1 (0%)
 
-The first part of this workshop consists of two modules:
-- `w5` (partially supplied)
-- `Book`
+The first portion of this workshop consists of modules:
+- `w6` (supplied)
+- `Vehicle` (supplied)
+- `Car`
+- `Autoshop`
+- `Utilities`
 
 Enclose all your source code within the `sdds` namespace and include the necessary guards in each header file.
 
@@ -87,72 +76,111 @@ Enclose all your source code within the `sdds` namespace and include the necessa
 
 
 
-### `Book` Module
+### `Car` Module
 
-This module holds information about a single book.
+This module defines a class that holds information about a single car.
 
-Design and code a class named `Book` that can store the following information (for each attribute, chose any type that you think is appropriate--you must be able to justify the decisions you have made):
 
-- **author**
-- **title**
-- **the country of publication**
-- **the year of publication**
-- **the price of the book**
-- **the description**: a short summary of the book
+***Private Data***
+
+Design and code a class named `Car`, that inherits the interface `Vehicle` (supplied), and that should be able to store the following information (for each attribute, you can chose any type you think it's appropriate--you must be able to justify the decisions you have made):
+
+- **maker**
+- **condition**: a car can be **new**, **used**, or **broken** in need of repairs.
+- **top speed**
 
 
 ***Public Members***
-- a default constructor
-- `const std::string& title() const`: a query that returns the title of the book
-- `const std::string& country() const`: a query that returns the publication country
-- `const size_t& year() const`: a query that returns the publication year
-- `double& price()`: a function that returns the price **by reference**, allowing the client code to update the price
-- `Book(const std::string& strBook)`: a constructor that receives a reference to an unmodifiable string that contains information about the book; this constructor extracts the information about the book from the string by parsing it and stores the tokens in the object's attributes. The string always has the following format:
-    ```
-    AUTHOR,TITLE,COUNTRY,PRICE,YEAR,DESCRIPTION
-    ```
-  This constructor should remove all spaces from the **beginning and end** of any token in the string.
 
-  When implementing the constructor, consider the following functions:
-  - [std::string::substr()](https://en.cppreference.com/w/cpp/string/basic_string/substr)
-  - [std::string::find()](https://en.cppreference.com/w/cpp/string/basic_string/find)
-  - [std::string::erase()](https://en.cppreference.com/w/cpp/string/basic_string/erase)
-  - [std::stoi()](https://en.cppreference.com/w/cpp/string/basic_string/stol)
-  - [std::stod()](https://en.cppreference.com/w/cpp/string/basic_string/stof)
-
-**Add any other private member that is required by your design!**
-
-
-***Friend Helpers***
-- overload the insertion operator to insert the content of a book object into an **ostream** object, in the following format:
-    ```
-    AUTHOR | TITLE | COUNTRY | YEAR | PRICE | DESCRIPTION
-    ```
-  - the **author** printed on a field of size 20;
-  - the **title** printed on a field of size 22;
-  - the **country** printed on a field of size 5;
-  - the **year** printed on a field of size 4;
-  - the **price** printed on a field of size 6, with 2 decimal digits;
+- a custom constructor that receives an object of type `std::istream&` as parameter. This constructor should be able to read a single record from the stream, extract all the information about a single car and store it in the attributes. Each record has the following format:
+  ```
+  TAG,MAKER,CONDITION,TOP_SPEED
+  ```
+  - `TAG`, is a single character representing the type of vehicle: `c` or `C` for car. Any other tag is considered invalid.
+  - `MAKER`, the name of the company that makes the car
+  - `CONDITION`, a single character: `n` for **new**, `u` for **used**, and `b` for **broken**. Any other character is considered invalid.
+  - `TOP_SPEED`, an integer containing the maximum speed the vehicle can achieve. If the content of this field is not a number, then the field is considered invalid.
+  - any space at the beginning/end of each field should be removed.
+- `std::string condition() const`: a query that returns `new`, `used` or `broken`, representing the condition of the car
+- `double topSpeed() const`
+- `void display(std::ostream& out) const`, a query that inserts in the first parameter the content of the car object in the format `| MAKER | CONDITION | TOP_SPEED |`, where
+  - `MAKER`, field of size 10
+  - `CONDITION`, field of size 6
+  - `TOP_SPEED`, field of size 6, with two significant digits after the period
   - see alignment in the sample output.
 
+**Add any other function that is required by your design!**
+
+For the first part, assume there are no invalid records in the file.
 
 
 
 
 
-### `w5` Module (partially supplied)
+### `Autoshop` module
+
+This module defines a class that holds information about an autoshop that sells various types of vehicles.
 
 
-This module has some missing statements. The missing parts are marked with `TODO`, which describes the code that you should add and where to add it. **Do not modify the existing code, only add the code that is missing!**
+***Private Data***
+
+Design and code a class named `Autoshop` that should be able to store the following information:
+
+- `std::vector<Vehicle*> m_vehicles`: a vector that store all the vehicles available at this autoshop.
+
+
+***Public Members***
+- `Autoshop& operator +=(Vehicle* theVehicle)`: adds the vehicle received as parameter into the `m_vehicles` vector.
+- `void display(std::ostream& out) const`: iterates over the vehicles stored in `m_vehicles` and prints them into the parameter (use `Vehicle::display()`) using the format:
+  ```
+  --------------------------------
+  | Cars in the autoshop!        |
+  --------------------------------
+  VEHICLE
+  VEHICLE
+  ...
+  --------------------------------
+  ```
+  
+  **To iterate over the elements of the vector, use STL iterators!**
+
+
+
+### `Utilities` module
+
+This module should contain a single function that creates instances on the `Vehicle` hierarchy:
+```cpp
+Vehicle* createInstance(std::istream& in);
+```
+
+This function should extract data from the parameter; if the first non-blank character is `c` or `C`, the this function should **dynamically** create an instance of type `Car` passing the stream to the constructor, and return it to the client.
+
+If the first non-blank character is anything else (or there are no more characters to extract), this function should return `nullptr`.
+
+Because the input file contains two types of delimiters (`\n` for records, and `,` for the fields in a record), you can use the class `std::stringstream` (utilization of this class is not mandatory, the extraction can be achieved without using it).
+
+When implementing the `createInstance` function, consider the following STL class:
+  - [std::stringstream](https://en.cppreference.com/w/cpp/io/basic_stringstream/basic_stringstream)
+
+
+
+### `w6` Module (supplied)
+
+
+The tester module for this portion has been supplied. **Do not modify the existing code!**
+
+When doing the workshop, you are encouraged to write your own tests, focusing on a single implemented feature at the time, until you get all functionality in place.
+
 
 
 ### Sample Output
 
-When the program is started with the command (the file `books.txt` is provided):
+When the program is started with the command (the file `cars.txt` is provided):
 ```bash
-ws books.txt
+ws cars.txt
 ```
-the output should look like that is the `sample_output.txt` file.
+the output should look like the one from the `sample_output.txt` file.
+
 
 
 
@@ -165,7 +193,7 @@ Upload your source code to your `matrix` account. Compile and run your code usin
 
 Then, run the following command from your account (replace `profname.proflastname` with your professor’s Seneca userid):
 ```bash
-~profname.proflastname/submit 345_w5_p1
+~profname.proflastname/submit 345_w6_p1
 ```
 and follow the instructions.
 
@@ -182,151 +210,91 @@ and follow the instructions.
 
 ## Part 2 (100%)
 
-The second part of this workshop upgrades your solution to incorporate three additional modules:
-- `Movie`
-- `SpellChecker`
-- `Collection`
+The second part of this workshop upgrades your solution to include one more module and update some existing modules:
+- `Racecar`
+- `Car` (to be updated)
+- `Autoshop` (to be updated)
+- `Utilities` (to be updated)
+- `w6` (to be updated)
 
 
 
 
-### `SpellChecker` Module (functor)
+### `Racecar` Module
 
 
-Add a `SpellChecker` module to your project. This module holds two parallel arrays of strings, both of size 6 (statically allocated):
-- `m_badWords`: an array with 6 misspelled words
-- `m_goodWords`: an array with the correct spelling of those 6 words
-- any other member required by your design to accomplish the goals described below.
-
-
-***Public Members***
-
-- `SpellChecker(const char* filename)`: receives the address of a C-style null-terminated string that holds the name of the file that contains the misspelled words. If the file exists, this constructor loads its contents. If the file is missing, this constructor throws an exception of type `const char*`, with the message `Bad file name!`. Each line in the file has the format `BAD_WORD  GOOD_WORD`; the two fields can be separated by any number of spaces.
-
-- `void operator()(std::string& text)`: this operator searches `text` and replaces any misspelled word with the correct version. It should also count how many times **each** misspelled word has been replaced.
-
-  When implementing this operator, consider the following functions:
-  - [std::string::find()](https://en.cppreference.com/w/cpp/string/basic_string/find)
-  - [std::string::replace()](https://en.cppreference.com/w/cpp/string/basic_string/replace)
-
-- `void showStatistics(std::ostream& out) const`: inserts into the parameter how many times each misspelled word has been replaced by the correct word using the current instance. The format of the output is:
-  ```
-  BAD_WORD: CNT replacements<endl>
-  ```
-  where `BAD_WORD` is to be printed on a field of size 15, aligned to the right.
-
-  **You will have to design a method to remember how many times each bad word has been replaced.**
-
-
-### `Book` Module
-
-
-Add a public templated function to your `Book` class:
-- `void fixSpelling(T& spellChecker)`: this function calls the overloaded `operator()` on the instance `spellChecker`, passing to it the book description.
-
-  ***ASSUMPTION***: In this design, type `T` must have an overload of the `operator()` that accepts a string as a parameter.
-
-  **Since this is a templated function, it must be implemented in the header file!** The class itself is not templated; only the function is templated.
-
-
-
-
-### `Movie` Module
-
-Design and code a class named `Movie` that stores the following information for a single movie (for each attribute, chose any type that you think is appropriate--you must be able to justify the decisions you have made):
-
-- **title**
-- **the year of release**
-- **the description**
-
-
-***Public Members***
-- a default constructor
-- `const std::string& title() const`: a query that returns the title of the movie
-- `Movie(const std::string& strMovie)`: receives the movie through a reference to a string. This constructor extracts the information about the movie from the string and stores the tokens in the attributes. The received string always has the following format:
-    ```
-    TITLE,YEAR,DESCRIPTION
-    ```
-  This constructor removes all spaces from the **beginning and end** of any token in the string.
-
-  When implementing this constructor, consider the following functions:
-  - [std::string::substr()](https://en.cppreference.com/w/cpp/string/basic_string/substr)
-  - [std::string::find()](https://en.cppreference.com/w/cpp/string/basic_string/find)
-  - [std::string::erase()](https://en.cppreference.com/w/cpp/string/basic_string/erase)
-  - [std::stoi()](https://en.cppreference.com/w/cpp/string/basic_string/stol)
-
-- `void fixSpelling(T& spellChecker)`: a templated function. This function calls the overloaded `operator()` on instance `spellChecker`, passing to it the movie title and description.
-
-  ***ASSUMPTION***: In this design, type `T` must have an overload of the `operator()` that accepts a string as a parameter.
-
-  **Since this is a templated function, it must be implemented in the header!** The class is not a templated class.
-
-**Add any other private member that is required by your design!**
-
-
-***Friend Helpers***
-- overload the insertion operator to insert the content of a movie object into an **ostream** object, in the following format:
-    ```
-    TITLE | YEAR | DESCRIPTION
-    ```
-  - the **title** printed on a field of size 40;
-  - the **year** printed on a field of size 4;
-
-
-
-
-### `Collection` Module
-
-
-Add a `Collection` module to your project. The purpose of this module is to manage a collection items of template type `T`. Since this is templated class, it doesn't need a `.cpp` file.
-
-The `Collection` class manages a **dynamically allocated** array of objects of type `T`, resizing it when a new item is added. When a new item is added to the collection, this class informs the client using a *callback function*.
-
-This class provides two overloads of the subscripting operator (`operator[]`) to access a stored item.
-
+Add a `Racecar` module to your project. A `Racecar` is a `Car` that for a short period of time can boost its top speed by a certain percent (this class should inherit `Car`).
 
 ***Private Data***
 
-- the name of the collection;
-- a dynamically allocated array of items `T`
-- the size of the array
-- a pointer to a function that returns `void` and receives two parameters of type `const Collection<T>&` and `const T&` in that order.
-
-  This is the **observer** function (it *observes* an event): when an item has been added to the collection, the class `Collection<T>` will call this function informing the client about the addition.
+- `double m_booster`: the percentage (stored as a number between 0 an 1) by which this `Racecar` can boost its top speed.
 
 
 ***Public Members***
 
-- `Collection(const std::string& name)`: sets the name of the collection to the string referred to by the parameter and sets all other attributes to their default value
-- this class doesn't support any copy operations; delete all of them.
-- a destructor
-- `const std::string& name() const`: a query that returns the name of the collection.
-- `size_t size() const`: a query that returns the number of items in the collection.
+- `Racecar(std::istream& in)`: calls the constructor from `Car` to build the subobject, and then it extracts the last field from the stream containing the booster bonus. The input format for a racecar is `TAG,MAKER,CONDITION,TOP_SPEED,BOOSTER`
+- `void display(std::ostream& out) const`: calls `Car::display()` to print the information about the car, and adds `*` at the end. The format should be `| MAKER | CONDITION | TOP_SPEED |*`
+- `double topSpeed() const`: returns the top speed of the car, including any booster effects.
 
-- `void setObserver(void (*observer)(const Collection<T>&, const T&))`: stores the address of the callback function (`observer`) into an attribute. This parameter is a pointer to a function
-that returns `void` and accepts two parameters: a collection and an item that has just been added to the collection. This function is called when an item is added to the collection.
-
-- `Collection<T>& operator+=(const T& item)`: adds a copy of `item` to the collection, only if the collection doesn't contain an item with the same title. If `item` is already in the collection, this function does nothing.  If the item is not yet in the collection, this function:
-  - resizes the array of items to accommodate the new item
-  - if an observer has been registered, this operator calls the observer function passing the current object (`*this`) and the new item as arguments.
-  - **ASSUMPTION**: type `T` has a member function called `title()` that returns the title of the item (`std::string`).
-
-- `T& operator[](size_t idx) const`: returns the item at index `idx`.
-  - if the index is out of range, this operator throws an exception of type `std::out_of_range` with the message `Bad index [IDX]. Collection has [SIZE] items.`. Use operator `+` to concatenate strings.
-
-  When implementing this operator, consider the following:
-  - [std::to_string()](https://en.cppreference.com/w/cpp/string/basic_string/to_string)
-  - [std::out_of_range](https://en.cppreference.com/w/cpp/error/out_of_range)
-
-- `T* operator[](const std::string& title) const`: returns the address of the item with the title `title` (type `T` has a member function called `title()` that returns the title of the item). If no such item exists, this function returns `nullptr`.
+This class should not have access to the attributes of the parent class.
 
 
-***FREE Helpers***
-
-- overload the insertion operator to insert the content of a `Collection` object into an **ostream** object. Iterate over all elements in the collection and insert each one into the `ostream` object (do not add newlines).
 
 
-**:warning:Important: The class `Collection` should have no knowledge of any of the custom types you have defined (`Book`, `Movie`, `SpellChecker`).** 
+### `Car` Module
+
+
+Update the `Car` module to handle invalid records, and generate exceptions when an invalid record is detected. This requires you to modify the custom constructor to detect the following situations:
+- the token representing the condition the car is empty (no characters or only blanks):
+  - consider that the car is **new**
+- the token representing the condition of the car is a different character than `n`, `u`, or `b`:
+  - generate an exception to inform the client that this record is invalid
+- the token representing the top speed is not a number:
+  - generate an exception to inform the client that this record is invalid
+
+No need to change anything else.
+
+
+
+
+
+### `Utilities` module
+
+Update the `createInstance` to build an instance of type `Racecar` if the first non-blank character extracted from the stream is `r` of `R`.
+
+If the first non-blank character is not `c`, `C`, `r`, or `R` this function should generate an exception, informing the client that this record contains information about an unknown vehicle.
+
+If there is no more information to be extracted from the stream, this function should return `nullptr`.
+
+
+
+
+
+### `Autoshop` Module
+
+
+Update this module to include two additional public functions.
+
+***Public Members***
+
+- a destructor. This function should iterate over the objects stored in the vector, and delete each one of them (note that the first portion has a memory leak because the dynamically allocated vehicles were not deleted anywhere).
+
+- `void select(T test, std::list<const Vehicle*>& vehicles)`: a **template** function that iterates over the vehicles stored in the `m_vehicles`, and adds to the second parameter all vehicles for which the `test` is true. The first parameter (`test`) can be a lambda expression, a pointer to a function, or a functor that matches the prototype:
+  ```cpp
+  bool func(const sdds::Vehicle*);
+  ```
+
+  **Since this is a template function, it must be implemented in the header!** The class is not a template.
+
+
+
+
+
+
+### `w6` Module (partially supplied)
+
+
+This module has some missing parts. The missing parts are marked with `TODO`, describing what code you should add and where. **Do not modify the existing code, only add what is missing!**
 
 
 
@@ -334,7 +302,7 @@ that returns `void` and accepts two parameters: a collection and an item that ha
 
 When the program is started with the command (the files are provided):
 ```bash
-ws books.txt movies.txt missing_file.txt words.txt
+ws dataClean.txt dataMessy.txt
 ```
 the output should look like the one from the `sample_output.txt` file.
 
@@ -346,10 +314,9 @@ the output should look like the one from the `sample_output.txt` file.
 Study your final solution, reread the related parts of the course notes, and make sure that you have understood the concepts covered by this workshop. **This should take no less than 30 minutes of your time and the result is suggested to be at least 150 words in length.**
 
 Create a **text** file named `reflect.txt` that contains your detailed description of the topics that you have learned in completing this particular workshop and mention any issues that caused you difficulty and how you solved them. Include in your explanation—**but do not limit it to**—the following points:
-- the difference between the implementations/utilizations of a functor and a lambda expression.  When is appropriate to use each one?
-- the constructor for `SpellChecker` generates an exception in certain conditions.  How would you change your code to achieve the same result, but without exceptions (both on the constructor and on the client side)? Compare the two solutions.
-- the classes `Movie` and `Book` contain almost identical logic in loading data from the file. How would you redesign the classes in order **not** to duplicate that logic?
-- the classes `Movie` and `Book` are instantiated from the `main()` function using a custom constructor, but they also contain a default constructor.  Is the default constructor necessary? Could you remove it? Justify your answer.
+- Why do you need to deallocate the dynamically allocated memory in your vector?
+- When building an object from the input file, different things can go wrong: the record represents an unknown type of vehicle, or record contains invalid data. How can the function `loadData()` detect what went wrong? Can you think at another solution than the one you have implemented?
+- In this workshop you had to use `std::list<sdds::Vehicle*>` and `std::vector<sdds::Vehicle*>` to store a collection of vehicles as pointers. Could you have used `std::list<sdds::Vehicle>` and `std::vector<sdds::Vehicle>` instead? **Justify your answer!**
 
 To avoid deductions, refer to code in your solution as examples to support your explanations.
 
@@ -365,7 +332,7 @@ Upload the source code and the reflection file to your `matrix` account. Compile
 
 Then, run the following command from your account (replace `profname.proflastname` with your professor’s Seneca userid):
 ```bash
-~profname.proflastname/submit 345_w5_p2
+~profname.proflastname/submit 345_w6_p2
 ```
 and follow the instructions.
 
